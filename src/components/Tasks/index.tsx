@@ -1,7 +1,7 @@
 import { Card, CloseIcon } from '@heroui/react'
 import { useState } from 'react'
 import { useTasks } from '../../hooks/useTasks'
-import type { Task } from '../../generated/prisma/client'
+import type { Task } from '../../types/task'
 import DeleteTask from '../DeleteTask'
 import TaskDetails from '../TaskDetails'
 
@@ -24,11 +24,11 @@ const Tasks = ({ filter }: Props) => {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null)
 
   const tasks = allTasks.filter((task: Task) =>
-    filter === 'active' ? getDiffDays(task.date as unknown as string) >= 0 : getDiffDays(task.date as unknown as string) < 0
+    filter === 'active' ? getDiffDays(task.date ) >= 0 : getDiffDays(task.date ) < 0
   )
 
   const isWarning = (task: Task) => {
-    const d = getDiffDays(task.date as unknown as string)
+    const d = getDiffDays(task.date )
     return d <= 3 && d >= 0
   }
 
@@ -70,7 +70,7 @@ const Tasks = ({ filter }: Props) => {
               </Card.Header>
               <Card.Description className={`flex flex-col ${expired ? 'text-red-600' : textColor}`}>
                 <p>Entrega: {new Date(task.date).toLocaleDateString('pt-BR')}</p>
-                <p>{formatRemaining(task.date as unknown as string)}</p>
+                <p>{formatRemaining(task.date )}</p>
               </Card.Description>
             </Card>
           )

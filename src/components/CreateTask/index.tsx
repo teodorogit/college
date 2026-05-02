@@ -47,7 +47,7 @@ const CreateTask = () => {
   };
 
   return (
-    <Drawer open={isOpen} onOpenChange={setIsOpen}>
+    <Drawer isOpen={isOpen} onOpenChange={setIsOpen}>
       <Button
       size="lg"
       isIconOnly

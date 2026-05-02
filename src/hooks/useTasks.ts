@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import type { Task } from '../generated/prisma/client';
+import type { Task } from '../types/task';
 import { API_URL } from '../lib/api';
 
 const fetchTasks = async (): Promise<Task[]> => {
