@@ -1,7 +1,8 @@
-import { Button, Drawer, IconPlus, Input, Label, TextField } from "@heroui/react";
-import { Form, Formik, Field } from "formik";
+import { Button, Drawer, IconPlus, Input, Label, TextField, toast } from "@heroui/react";
+import { Form, Formik, Field, type FormikHelpers } from "formik";
 import * as Yup from "yup";
 import { useState } from "react";
+import { useCreateTask } from "../../hooks/useCreateTask";
 
 type FormikProps = {
   subject: string;
@@ -29,7 +30,7 @@ const validationSchema = Yup.object().shape({
 
 const CreateTask = () => {
   const [isOpen, setIsOpen] = useState(false);
-
+  const { mutateAsync: createTask } = useCreateTask();
   const today = new Date().toISOString().split("T")[0];
 
   const initialValues: FormikProps = {
@@ -38,9 +39,9 @@ const CreateTask = () => {
     date: today,
   };
 
-  const handleSubmit = (values: FormikProps, { resetForm }: any) => {
-    console.log("Tarefa salva:", values);
-    alert("Tarefa cadastrada com sucesso!");
+  const handleSubmit = async (values: FormikProps, { resetForm }: FormikHelpers<FormikProps>) => {
+    await createTask(values);
+    toast.success("Tarefa cadastrada com sucesso!");
     resetForm();
     setIsOpen(false);
   };
@@ -48,11 +49,13 @@ const CreateTask = () => {
   return (
     <Drawer open={isOpen} onOpenChange={setIsOpen}>
       <Button
+      size="lg"
+      isIconOnly
         variant="primary"
         className="fixed bottom-[5%] right-[5%] transform"
         onPress={() => setIsOpen(true)}
       >
-        <IconPlus /> Cadastrar
+        <IconPlus />
       </Button>
       <Drawer.Backdrop>
         <Drawer.Content placement="right">
