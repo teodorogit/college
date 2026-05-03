@@ -1,4 +1,4 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { API_URL } from '../lib/api';
 
 type UpdateTaskData = {
@@ -19,5 +19,9 @@ const updateTaskFn = async ({ id, data }: UpdateTaskData) => {
 };
 
 export const useUpdateTask = () => {
-  return useMutation({ mutationFn: updateTaskFn });
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: updateTaskFn,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['tasks'] }),
+  });
 };

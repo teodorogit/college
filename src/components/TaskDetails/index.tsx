@@ -59,7 +59,7 @@ const TaskDetails = ({ task, isOpen, onClose }: Props) => {
             <Modal.Body className="px-5 pt-3 pb-4 flex flex-col gap-4">
               <div>
                 <p className="text-xs text-gray-400 uppercase font-semibold mb-1">Descrição</p>
-                <p className="text-sm text-gray-700 leading-relaxed truncate    ">{task.description}</p>
+                <p className="text-sm text-gray-700 leading-relaxed line-clamp-3 overflow-auto">{task.description}</p>
               </div>
 
               <div className="flex flex-col gap-1">

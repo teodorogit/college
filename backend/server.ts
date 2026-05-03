@@ -34,6 +34,25 @@ app.delete('/tasks/:id', async (req, res) => {
   }
 })
 
+app.put('/tasks/:id', async (req, res) => {
+  const { id } = req.params
+  const { subject, description, date } = req.body
+  try {
+    const updated = await db.task.update({
+      where: { id: Number(id) },
+      data: {
+        ...(subject && { subject }),
+        ...(description && { description }),
+        ...(date && { date: new Date(date) }),
+      },
+    })
+    res.json(updated)
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ error: 'Erro ao atualizar task' })
+  }
+})
+
 app.post('/tasks', async (req, res) => {
   const  { subject, description, date} = req.body
   try {

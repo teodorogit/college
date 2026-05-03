@@ -3,7 +3,15 @@ import { useState } from 'react'
 import { useTasks } from '../../hooks/useTasks'
 import type { Task } from '../../types/task'
 import DeleteTask from '../DeleteTask'
+import EditTask from '../EditTask'
 import TaskDetails from '../TaskDetails'
+
+const PencilIcon = ({ className }: { className?: string }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className={`w-4 h-4 ${className ?? ''}`}>
+    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+  </svg>
+)
 
 type Props = {
   filter: 'active' | 'expired'
@@ -22,6 +30,7 @@ const Tasks = ({ filter }: Props) => {
   const { data: allTasks = [] } = useTasks()
   const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null)
   const [selectedTask, setSelectedTask] = useState<Task | null>(null)
+  const [editingTask, setEditingTask] = useState<Task | null>(null)
 
   const tasks = allTasks.filter((task: Task) =>
     filter === 'active' ? getDiffDays(task.date ) >= 0 : getDiffDays(task.date ) < 0
@@ -49,7 +58,7 @@ const Tasks = ({ filter }: Props) => {
 
   return (
     <>
-      <div className='grid grid-cols-2 p-3 gap-3 w-full'>
+      <div className='grid grid-cols-1 p-3 gap-3 w-full'>
         {tasks.map((task: Task) => {
           const colorIndex = task.id % colorTasks.length
           const textColor = textColors[colorIndex]
@@ -57,15 +66,20 @@ const Tasks = ({ filter }: Props) => {
           return (
             <Card
               key={task.id}
-              className={`${expired ? 'border-b-red-400 opacity-75' : isWarning(task) ? 'border-b-red-400' : colorTasks[colorIndex]} shadow-sm border-b-5 justify-between`}
+              className={`${expired ? 'border-b-red-400 opacity-75' : isWarning(task) ? ' border-red-400/50' : colorTasks[colorIndex]} border shadow-sm border-b-5 justify-between`}
               onClick={() => setSelectedTask(task)}
             >
               <Card.Header>
                 <Card.Title className={`uppercase flex w-full justify-between ${expired ? 'text-red-700' : textColor}`}>
                   {task.subject}
-                  <button onClick={(e) => { e.stopPropagation(); setSelectedTaskId(task.id) }}>
-                    <CloseIcon className={expired ? 'text-red-700' : textColor} />
-                  </button>
+                  <div className="flex gap-1">
+                    <button onClick={(e) => { e.stopPropagation(); setEditingTask(task) }}>
+                      <PencilIcon  className={expired ? 'text-red-700' : textColor } />
+                    </button>
+                    <button onClick={(e) => { e.stopPropagation(); setSelectedTaskId(task.id) }}>
+                      <CloseIcon className={expired ? 'text-red-700' : textColor} />
+                    </button>
+                  </div>
                 </Card.Title>
               </Card.Header>
               <Card.Description className={`flex flex-col ${expired ? 'text-red-600' : textColor}`}>
@@ -82,6 +96,14 @@ const Tasks = ({ filter }: Props) => {
           taskId={selectedTaskId}
           isOpen={selectedTaskId !== null}
           onClose={() => setSelectedTaskId(null)}
+        />
+      )}
+
+      {editingTask !== null && (
+        <EditTask
+          task={editingTask}
+          isOpen={editingTask !== null}
+          onClose={() => setEditingTask(null)}
         />
       )}
 
