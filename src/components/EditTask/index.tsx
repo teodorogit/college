@@ -45,10 +45,14 @@ const EditTask = ({ task, isOpen, onClose }: Props) => {
   };
 
   const handleSubmit = async (values: FormValues, { resetForm }: FormikHelpers<FormValues>) => {
-    await updateTask({ id: task.id, data: values });
-    toast.success("Tarefa atualizada com sucesso!");
-    resetForm();
-    onClose();
+    try {
+      await updateTask({ id: task.id, data: values });
+      toast.success("Tarefa atualizada com sucesso!");
+      resetForm();
+      onClose();
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Erro ao atualizar tarefa");
+    }
   };
 
   return (

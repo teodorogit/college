@@ -11,11 +11,14 @@ type UpdateTaskData = {
 };
 
 const updateTaskFn = async ({ id, data }: UpdateTaskData) => {
-  await fetch(`${API_URL}/tasks/${id}`, {
+  const response = await fetch(`${API_URL}/tasks/${id}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
   });
+  const json = await response.json();
+  if (!response.ok) throw new Error(json.error ?? 'Erro ao atualizar task');
+  return json;
 };
 
 export const useUpdateTask = () => {

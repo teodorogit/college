@@ -40,10 +40,14 @@ const CreateTask = () => {
   };
 
   const handleSubmit = async (values: FormikProps, { resetForm }: FormikHelpers<FormikProps>) => {
-    await createTask(values);
-    toast.success("Tarefa cadastrada com sucesso!");
-    resetForm();
-    setIsOpen(false);
+    try {
+      await createTask(values);
+      toast.success("Tarefa cadastrada com sucesso!");
+      resetForm();
+      setIsOpen(false);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Erro ao cadastrar tarefa");
+    }
   };
 
   return (

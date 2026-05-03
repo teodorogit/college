@@ -13,7 +13,9 @@ const createTaskFn = async (data: CreateTaskData) => {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
   });
-  return response.json();
+  const json = await response.json();
+  if (!response.ok) throw new Error(json.error ?? 'Erro ao criar task');
+  return json;
 };
 
 export const useCreateTask = () => {
